@@ -95,14 +95,19 @@ public class CharacterCreator extends Observable  implements Serializable{
 
         Race[] races = Race.values();
         String[] ra = new String[races.length];
-        for(int i = 0; i < races.length; i++) {
-            if(!races[i].name().isEmpty())
-                ra[i] = races[i].name().substring(0, 1).toUpperCase() + races[i].name().substring(1).toLowerCase();
-        }
+        for(int i = 0; i < races.length; i++)
+            ra[i] = capitalize(races[i].name());
+
         //return new String[]{""};
         return ra;
     }
-    
+
+
+    private String capitalize(String str) {
+        if(str != null && !str.isEmpty())
+            return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
+        else return str;
+    }
 
     public void setRace(int position) {
         // TODO: 11.12.2017
@@ -136,8 +141,14 @@ public class CharacterCreator extends Observable  implements Serializable{
         *    Строка должна быть формата - первая буква заглавная, остальные строчные
         *   One, Two, Three
         * */
-        return new String[]{""};
 
+        Attribute[] attributes = Attribute.values();
+        String[] at = new String[attributes.length];
+        for(int i = 0; i < attributes.length; i++)
+            at[i] = capitalize(attributes[i].name());
+
+        //return new String[]{""};
+        return at;
     }
 
     public String[] getPerks() {
@@ -149,7 +160,13 @@ public class CharacterCreator extends Observable  implements Serializable{
         *
         * */
 
-        return new String[]{""};
+        Perk[] perks = Perk.values();
+        String[] pe = new String[perks.length];
+        for(int i = 0; i < perks.length; i++)
+            pe[i] = capitalize(perks[i].name());
+
+        //return new String[]{""};
+        return pe;
 
     }
     public void updateAttributeValue(int position, int updateTo) {
