@@ -52,13 +52,14 @@ public class CharacterCreator extends Observable  implements Serializable{
         * */
 
         Specialization[] specializations = Specialization.values();
-        String[] sp = new String[specializations.length];
-        for(int i = 0; i < specializations.length; i++) {
-            sp[i] = specializations[i].name();
-        }
-
-       // return new String[]{""};
-        return sp;
+        if(specializations.length > 0) {
+            String[] sp = new String[specializations.length];
+            for (int i = 0; i < specializations.length; i++) {
+                sp[i] = specializations[i].name();
+            }
+            return sp;
+        } else
+            return new String[]{""};
     }
 
     public void setSpecialization(int position) {
@@ -74,14 +75,15 @@ public class CharacterCreator extends Observable  implements Serializable{
         *
         * */
         Specialization[] specializations = Specialization.values();
-
-        if(position < 0)
-            mSpecialization = specializations[0];
-        else {
-            if (position > specializations.length)
-                mSpecialization = specializations[specializations.length - 1];
-            else
-                mSpecialization = specializations[position];
+        if(specializations.length > 0) {
+            if (position < 0)
+                mSpecialization = specializations[0];
+            else {
+                if (position > specializations.length)
+                    mSpecialization = specializations[specializations.length - 1];
+                else
+                    mSpecialization = specializations[position];
+            }
         }
     }
 
@@ -94,19 +96,13 @@ public class CharacterCreator extends Observable  implements Serializable{
         * */
 
         Race[] races = Race.values();
-        String[] ra = new String[races.length];
-        for(int i = 0; i < races.length; i++)
-            ra[i] = capitalize(races[i].name());
-
-        //return new String[]{""};
-        return ra;
-    }
-
-
-    private String capitalize(String str) {
-        if(str != null && !str.isEmpty())
-            return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
-        else return str;
+        if(races.length > 0) {
+            String[] ra = new String[races.length];
+            for (int i = 0; i < races.length; i++)
+                ra[i] = capitalize(races[i].name());
+            return ra;
+        } else
+            return new String[]{""};
     }
 
     public void setRace(int position) {
@@ -122,14 +118,17 @@ public class CharacterCreator extends Observable  implements Serializable{
         *  если введенное число больше длины enum, то в mRace записывается самое последнее (длина - 1) значение
         *
         * */
+
         Race[] races = Race.values();
-        if(position < 0)
-            mRace = races[0];
-        else {
-            if(position >= races.length)
-                mRace = races[races.length - 1];
-            else
-                mRace = races[position];
+        if(races.length > 0) {
+            if (position < 0)
+                mRace = races[0];
+            else {
+                if (position >= races.length)
+                    mRace = races[races.length - 1];
+                else
+                    mRace = races[position];
+            }
         }
     }
 
@@ -143,12 +142,13 @@ public class CharacterCreator extends Observable  implements Serializable{
         * */
 
         Attribute[] attributes = Attribute.values();
-        String[] at = new String[attributes.length];
-        for(int i = 0; i < attributes.length; i++)
-            at[i] = capitalize(attributes[i].name());
-
-        //return new String[]{""};
-        return at;
+        if(attributes.length > 0) {
+            String[] at = new String[attributes.length];
+            for (int i = 0; i < attributes.length; i++)
+                at[i] = capitalize(attributes[i].name());
+            return at;
+        } else
+            return new String[]{""};
     }
 
     public String[] getPerks() {
@@ -161,14 +161,17 @@ public class CharacterCreator extends Observable  implements Serializable{
         * */
 
         Perk[] perks = Perk.values();
-        String[] pe = new String[perks.length];
-        for(int i = 0; i < perks.length; i++)
-            pe[i] = capitalize(perks[i].name());
+        if(perks.length > 0) {
+            String[] pe = new String[perks.length];
+            for (int i = 0; i < perks.length; i++)
+                pe[i] = capitalize(perks[i].name());
 
-        //return new String[]{""};
-        return pe;
 
+            return pe;
+        } else
+            return new String[]{""};
     }
+
     public void updateAttributeValue(int position, int updateTo) {
         // TODO: 11.12.2017
         /*
@@ -206,6 +209,18 @@ public class CharacterCreator extends Observable  implements Serializable{
         *       то мы не можем увеличить атрибут, ничего не происходит        *
         * */
 
+        Attribute[] attributes = Attribute.values();
+        if(attributes.length > 0 && position >= 0 && position < attributes.length) {
+            Attribute attribute = attributes[position];
+            int attributeValue =  mAttributesMap.get(attribute.name());
+            if((updateTo > 0 && updateTo <= mAvailablePoints) || (updateTo < 0 && attributeValue + updateTo > 0)) {
+                attributeValue =+ updateTo;
+                mAvailablePoints =- updateTo;
+                mAttributesMap.put(attribute.name(), attributeValue);
+                setChanged();
+                notifyObservers();
+            }
+        }
     }
 
     public void setName(String name) {
@@ -257,5 +272,16 @@ public class CharacterCreator extends Observable  implements Serializable{
 
     public int getSpecializationPosition() {
         return mSpecialization.ordinal();
+    }
+
+    /**
+     * Перевод первой буквы слова в верхний регистр, а остальные в нижний
+     * @param str
+     * @return
+     */
+    private String capitalize(String str) {
+        if(str != null && !str.isEmpty())
+            return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
+        else return str;
     }
 }
